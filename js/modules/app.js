@@ -91,7 +91,7 @@
           if (!paused) {
             return;
           }
-          console.time('How long it too for you to crash');
+          console.time('How long it took for you to crash');
           paused = false;
           walls = [new Wall, new Wall];
           player = new Player;
