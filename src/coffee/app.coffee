@@ -47,7 +47,7 @@ define (require) ->
       paused = true
 
       console.log "You crashed with #{points} points!"
-      console.timeEnd 'How long it too for you to crash'
+      console.timeEnd 'How long it took for you to crash'
       $start.text($start.text().replace ' s', ' res').addClass 'large'
 
     init = ->
