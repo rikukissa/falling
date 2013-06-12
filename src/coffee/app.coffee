@@ -19,9 +19,8 @@ define (require) ->
     points = 0
     paused = true
     emptyChar = '-'
-
+    $start = $('#start')
     console.log "Hello there!"
-
 
     class Player
       constructor: ->
@@ -33,6 +32,7 @@ define (require) ->
         @x = 0
         @v = true
         @peak = Math.floor(Math.random() * (length/2))
+      
       toggle: ->
         if @v then @v = false else @v = true
         @peak = Math.floor(Math.random() * (length/2 + 20)) if @v
@@ -45,17 +45,21 @@ define (require) ->
 
     end = ->
       paused = true
-      console.log "You crashed with #{points} points!"
 
-      $("#start").text($("#start").text().replace ' s', ' res').addClass 'large'
+      console.log "You crashed with #{points} points!"
+      console.timeEnd 'How long it too for you to crash'
+      $start.text($start.text().replace ' s', ' res').addClass 'large'
 
     init = ->
       return unless paused
+      console.time 'How long it too for you to crash'
       paused = false
       walls = [new Wall, new Wall]
       player = new Player
       points = 0
-      blinded = false
+
+      render = (row) -> 
+        console.log row, "#{points} points"
 
       tick = ->  
         space = length - walls[0].x - walls[1].x
@@ -70,25 +74,26 @@ define (require) ->
 
         if 200 < points < 450
           console.clear()
-          console.log "It's so dark ;__;"
+          console.log "PARTY HARD MODE ACTIVATED!"
+          render(row) if points % 2 is 0
 
-        console.log row.replaceAt row.length - (points + "").length - 1, points + ""
+        else
+          render(row)
 
         w.tick() for w in walls
         player.x += 1 if KEYS[39]
         player.x -= 1 if KEYS[37]
         points += 1
         
-        setTimeout tick, 1000/ (10 + points/20)
+        setTimeout tick, Math.max 1, 1000/ (10 + points/25)
+
       tick()
 
       return "Lets go!"
 
-    
-    $("#start").on 'click', init
+    $start.on 'click', init
 
     $(window).on 'keydown keyup', (e) ->
-      e.preventDefault()
       KEYS[e.keyCode] = e.type == 'keydown' if KEYS.hasOwnProperty e.keyCode
 
     null
