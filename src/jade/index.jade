@@ -1,0 +1,17 @@
+doctype 5
+html
+  head
+    link(rel='stylesheet', type='text/css', href="css/styles.css")
+    script(type='text/javascript', src='js/vendor/require.js', data-main='js/modules/app')
+    meta(charset='utf-8')
+    title Hello world!
+  body
+    .container
+      .content
+        h2 1. Open JavaScript-console
+        h2#start 2. Click here start!
+        h2 3. Be careful
+    script(type='text/javascript')
+      require(['app'], function(app){ app.main() })
+
+
