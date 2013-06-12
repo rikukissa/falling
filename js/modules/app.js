@@ -18,12 +18,13 @@
     };
     return {
       main: function() {
-        var Player, Wall, char, emptyChar, end, init, length, paused, points;
+        var $start, Player, Wall, char, emptyChar, end, init, length, paused, points;
         char = '#';
         length = 100;
         points = 0;
         paused = true;
         emptyChar = '-';
+        $start = $('#start');
         console.log("Hello there!");
         Player = (function() {
           function Player() {
@@ -82,18 +83,22 @@
         end = function() {
           paused = true;
           console.log("You crashed with " + points + " points!");
-          return $("#start").text($("#start").text().replace(' s', ' res')).addClass('large');
+          console.timeEnd('How long it too for you to crash');
+          return $start.text($start.text().replace(' s', ' res')).addClass('large');
         };
         init = function() {
-          var blinded, player, tick, walls;
+          var player, render, tick, walls;
           if (!paused) {
             return;
           }
+          console.time('How long it too for you to crash');
           paused = false;
           walls = [new Wall, new Wall];
           player = new Player;
           points = 0;
-          blinded = false;
+          render = function(row) {
+            return console.log(row, "" + points + " points");
+          };
           tick = function() {
             var a, air, row, space, w, _i, _len;
             space = length - walls[0].x - walls[1].x;
@@ -112,9 +117,13 @@
             row = row.replaceAt(player.x, player.char);
             if ((200 < points && points < 450)) {
               console.clear();
-              console.log("It's so dark ;__;");
+              console.log("PARTY HARD MODE ACTIVATED!");
+              if (points % 2 === 0) {
+                render(row);
+              }
+            } else {
+              render(row);
             }
-            console.log(row.replaceAt(row.length - (points + "").length - 1, points + ""));
             for (_i = 0, _len = walls.length; _i < _len; _i++) {
               w = walls[_i];
               w.tick();
@@ -126,14 +135,13 @@
               player.x -= 1;
             }
             points += 1;
-            return setTimeout(tick, 1000 / (10 + points / 20));
+            return setTimeout(tick, Math.max(1, 1000 / (10 + points / 25)));
           };
           tick();
           return "Lets go!";
         };
-        $("#start").on('click', init);
+        $start.on('click', init);
         $(window).on('keydown keyup', function(e) {
-          e.preventDefault();
           if (KEYS.hasOwnProperty(e.keyCode)) {
             return KEYS[e.keyCode] = e.type === 'keydown';
           }
